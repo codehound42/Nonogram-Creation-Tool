@@ -1,0 +1,214 @@
+<!DOCTYPE html> 
+<html>
+<head>
+<title>Hanjie</title>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+	var width = 10;
+	var height = 10;
+	
+	var mouseLeft = false;
+	var mouseRight = false;
+	
+	//generér tabel
+	var t = "<table id='table_draw' border='1px solid #000000' oncontextmenu='return false'>";
+	for (var y=0; y<height; y++) {
+		t += "<tr>";
+		for (var x=0; x<width; x++) {
+			var nr = y * width + x;
+			t += "<td id='c" + nr + "'></td>";
+		}
+		t += "</tr>";
+	}
+	t += "</table>";
+	$("#button_random").after(t);
+	
+	$("td").mouseover(function(){
+		if (mouseLeft) $(this).addClass("colored");
+		if (mouseRight) $(this).removeClass("colored");
+	});
+	
+	$("td").mousedown(function(event){
+		switch (event.which) {
+			case 1:
+				mouseLeft = true;
+				$(this).addClass("colored");
+				break;
+			case 3:
+				mouseRight = true;
+				$(this).removeClass("colored");
+				break;
+		}
+	});
+	
+	$("body").mouseup(function(event){
+		switch (event.which) {
+			case 1:
+				mouseLeft = false;
+				break;
+			case 3:
+				mouseRight = false;
+				break;
+		}
+	});
+
+	$("#button_reset").click(function(){
+		for (var i=0; i<width*height; i++) {
+			$("#c" + i.toString()).removeClass("colored");
+		}
+	});
+	
+	$("#button_inverte").click(function(){
+		for (var i=0; i<width*height; i++) {
+			$("#c" + i.toString()).toggleClass("colored");
+		}
+	});
+	
+	$("#button_random").click(function(){
+		for (var i=0; i<width*height; i++) {
+			var random = Math.random();
+			if (random < 0.55) $("#c" + i.toString()).addClass("colored");
+			else $("#c" + i.toString()).removeClass("colored");
+		}
+	});
+	
+	$("#button_done").click(function(){
+		var cell = "";
+		var rows = new Array();
+		var cols = new Array();
+		var p = 0;
+		var enc = false;
+		var pos = 0;
+		
+		//kører vandret
+		for (var y=0; y<height; y++) {
+			rows[y] = new Array();
+			p = 0;
+			enc = false;
+			for (var x=0; x<width; x++) {
+				pos = y * width + x;
+				cell = "c" + pos.toString();
+				if ($("#" + cell).hasClass("colored")) {
+					if (typeof rows[y][p] === 'undefined') {
+						rows[y][p] = 1;
+						enc = true;
+					} else {
+						rows[y][p]++;
+					}
+				} else if (enc) {
+					p++;
+					enc = false;
+				}
+			}
+		}
+		//kører lodret
+		for (var x=0; x<width; x++) {
+			cols[x] = new Array();
+			p = 0;
+			enc = false;
+			for (var y=0; y<height; y++) {
+				pos = y * width + x;
+				cell = "c" + pos.toString();
+				if ($("#" + cell).hasClass("colored")) {
+					if (typeof cols[x][p] === 'undefined') {
+						cols[x][p] = 1;
+						enc = true;
+					} else {
+						cols[x][p]++;
+					}
+				} else if (enc) {
+					p++;
+					enc = false;
+				}
+			}
+		}
+		
+		//genererer nye tabel
+		var t = "<table border='1px solid #000000'><tr><td></td>";
+		for (var x=0; x<width; x++) {
+			t += "<td ";
+			if (x % 5 == 0) t += "style='border-left: 2px solid #000000;'";
+			t += ">";
+			for (var i=0; i<cols[x].length; i++) {
+				t += cols[x][i].toString() + "<br />";
+			}
+			t += "</td>";
+		}
+		t += "</tr>";
+		
+		var str = "";
+		for (var y=0; y<height; y++) {
+			str = "";
+			t += "<tr>";
+			t += "<td ";
+			for (var i=0; i<rows[y].length; i++) {
+				str += " " + rows[y][i].toString();
+				if (rows[y].length - i != 1) str += " ";
+			}
+			if (y % 5 == 0) {
+				t += "style='border-top: 2px solid #000000; text-align:right; vertical-align:center; ";
+				t += "width: " + str.length * 5 + "'>";
+			} else {
+				t += "style='text-align:right; vertical-align:center; width: " + str.length * 6 + "'>";
+			}
+			t += str;
+			
+			t += "</td>";
+			for (var x=0; x<width; x++) {
+				t += "<td ";
+					var mx = x % 5 == 0 && x != width - 1;
+					var my = y % 5 == 0 && y != height - 1;
+					if (mx || my) {
+						if (mx && !my) t += "style='border-left: 2px solid #000000;'";
+						if (!mx && my) t += "style='border-top: 2px solid #000000;'";
+						if (mx && my) t += "style='border-left: 2px solid #000000; border-top: 2px solid #000000;'";
+					}
+				t += "></td>";
+			}
+			t += "</tr>";
+		}
+		t += "</table>";
+		$("h1").after(t);
+		
+		var d = new Date();
+		$("h1").after("<p>" + d.getDate().toString() + "/" + (d.getMonth() + 1).toString() + "-" + d.getFullYear().toString() + "</p>");
+		
+		$("#table_draw").remove();
+		$("#button_done").remove();
+		$("h1").remove();
+		$("#button_reset").remove();
+		$("#button_inverte").remove();
+		$("#button_random").remove();
+	});
+});
+</script>
+<style>
+table {
+	-moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+   
+	border-collapse:collapse;
+	empty-cells:show;
+}
+td {
+	border:1px solid #afafaf;
+	width:30px;
+	height:30px;
+	text-align:center;
+	vertical-align:bottom;
+}
+.colored {
+	background-color:#000000;
+}
+</style>
+</head>
+<body>
+<h1>Hanjie</h1>
+<button id="button_reset" type="button" name="reset">Reset</button>
+<button id="button_inverte" type="button" name="inverte">Invatér</button>
+<button id="button_random" type="button" name="random">Scramble</button>
+<button id="button_done" type="button" name="done">Done</button>
+</body>
+</html>
