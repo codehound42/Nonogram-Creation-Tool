@@ -11,7 +11,7 @@ $(document).ready(function(){
 	var mouseLeft = false;
 	var mouseRight = false;
 	
-	//generér tabel
+	// Generate table
 	var t = "<table id='table_draw' border='1px solid #000000' oncontextmenu='return false'>";
 	for (var y=0; y<height; y++) {
 		t += "<tr>";
@@ -59,7 +59,7 @@ $(document).ready(function(){
 		}
 	});
 	
-	$("#button_inverte").click(function(){
+	$("#button_invert").click(function(){
 		for (var i=0; i<width*height; i++) {
 			$("#c" + i.toString()).toggleClass("colored");
 		}
@@ -81,7 +81,7 @@ $(document).ready(function(){
 		var enc = false;
 		var pos = 0;
 		
-		//kører vandret
+		// Horizontal
 		for (var y=0; y<height; y++) {
 			rows[y] = new Array();
 			p = 0;
@@ -102,7 +102,8 @@ $(document).ready(function(){
 				}
 			}
 		}
-		//kører lodret
+
+		// Vertical
 		for (var x=0; x<width; x++) {
 			cols[x] = new Array();
 			p = 0;
@@ -124,7 +125,7 @@ $(document).ready(function(){
 			}
 		}
 		
-		//genererer nye tabel
+		// Generate new table
 		var t = "<table border='1px solid #000000'><tr><td></td>";
 		for (var x=0; x<width; x++) {
 			t += "<td ";
@@ -178,7 +179,7 @@ $(document).ready(function(){
 		$("#button_done").remove();
 		$("h1").remove();
 		$("#button_reset").remove();
-		$("#button_inverte").remove();
+		$("#button_invert").remove();
 		$("#button_random").remove();
 	});
 });
@@ -207,7 +208,7 @@ td {
 <body>
 <h1>Hanjie</h1>
 <button id="button_reset" type="button" name="reset">Reset</button>
-<button id="button_inverte" type="button" name="inverte">Invatér</button>
+<button id="button_invert" type="button" name="invert">Invert</button>
 <button id="button_random" type="button" name="random">Scramble</button>
 <button id="button_done" type="button" name="done">Done</button>
 </body>
