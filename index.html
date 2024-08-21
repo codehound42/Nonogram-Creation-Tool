@@ -1,35 +1,44 @@
 <!DOCTYPE html> 
 <html>
 <head>
-<title>Hanjie</title>
+<title>Hanjie Generation Tool</title>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script>
 $(document).ready(function(){
-	var width = 10;
-	var height = 10;
-	
+	var width = 15;
+	var height = 15;
+
+	// Function to generate the grid based on width and height
+	function generateTable() {
+		width = parseInt($("#input_width").val());
+		height = parseInt($("#input_height").val());
+		
+		var t = "<table id='table_draw' border='1px solid #000000' oncontextmenu='return false'>";
+		for (var y=0; y<height; y++) {
+			t += "<tr>";
+			for (var x=0; x<width; x++) {
+				var nr = y * width + x;
+				t += "<td id='c" + nr + "'></td>";
+			}
+			t += "</tr>";
+		}
+		t += "</table>";
+		$("#button_random").after(t);
+	}
+
+	// Generate the initial table
+	generateTable();
+
+	// Event handlers
 	var mouseLeft = false;
 	var mouseRight = false;
-	
-	// Generate table
-	var t = "<table id='table_draw' border='1px solid #000000' oncontextmenu='return false'>";
-	for (var y=0; y<height; y++) {
-		t += "<tr>";
-		for (var x=0; x<width; x++) {
-			var nr = y * width + x;
-			t += "<td id='c" + nr + "'></td>";
-		}
-		t += "</tr>";
-	}
-	t += "</table>";
-	$("#button_random").after(t);
-	
-	$("td").mouseover(function(){
+
+	$("body").on("mouseover", "td", function(){
 		if (mouseLeft) $(this).addClass("colored");
 		if (mouseRight) $(this).removeClass("colored");
 	});
-	
-	$("td").mousedown(function(event){
+
+	$("body").on("mousedown", "td", function(event){
 		switch (event.which) {
 			case 1:
 				mouseLeft = true;
@@ -41,7 +50,7 @@ $(document).ready(function(){
 				break;
 		}
 	});
-	
+
 	$("body").mouseup(function(event){
 		switch (event.which) {
 			case 1:
@@ -64,7 +73,7 @@ $(document).ready(function(){
 			$("#c" + i.toString()).toggleClass("colored");
 		}
 	});
-	
+
 	$("#button_random").click(function(){
 		for (var i=0; i<width*height; i++) {
 			var random = Math.random();
@@ -72,7 +81,7 @@ $(document).ready(function(){
 			else $("#c" + i.toString()).removeClass("colored");
 		}
 	});
-	
+
 	$("#button_done").click(function(){
 		var cell = "";
 		var rows = new Array();
@@ -182,6 +191,11 @@ $(document).ready(function(){
 		$("#button_invert").remove();
 		$("#button_random").remove();
 	});
+
+	$("#button_update").click(function() {
+		$("#table_draw").remove(); // Remove the existing table
+		generateTable(); // Generate a new table with the updated dimensions
+	});
 });
 </script>
 <style>
@@ -207,6 +221,11 @@ td {
 </head>
 <body>
 <h1>Hanjie</h1>
+<label for="input_width">Width:</label>
+<input type="number" id="input_width" value="15" min="1">
+<label for="input_height">Height:</label>
+<input type="number" id="input_height" value="15" min="1">
+<button id="button_update" type="button" name="update">Update</button>
 <button id="button_reset" type="button" name="reset">Reset</button>
 <button id="button_invert" type="button" name="invert">Invert</button>
 <button id="button_random" type="button" name="random">Scramble</button>

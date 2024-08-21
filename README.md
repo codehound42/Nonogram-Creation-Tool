@@ -5,6 +5,7 @@
 Very basic web app for drawing a binary pixelated image and convert it to a nonogram/picross/griddlers/hanjie puzzle.
 
 ## How?
+Launch the `index.html` file in a web browser. JQuery and vanilla JS. No installation required.
 Draw an image by clicking or dragging the mouse over the table cells using left click. Use the right mouse button to erase.
 
 ## Why?
